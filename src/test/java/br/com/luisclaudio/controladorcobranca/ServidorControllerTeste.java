@@ -18,9 +18,6 @@ public class ServidorControllerTeste {
 	@Test
 	public void testIniciarUtilizacaoServidor() {
 		assertTrue(servidorController.iniciarUtilizacaoServidor("teste1", "10") instanceof List);
-		
-		UUID.randomUUID();
-		UUID.fromString("teste2");
 	}
 	
 	@Test(expected=NumberFormatException.class)

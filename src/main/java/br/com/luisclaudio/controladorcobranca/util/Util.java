@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public final class Util {
 	
-	public static final ResourceBundle bundle = ResourceBundle.getBundle("mensagens");
+	public static final ResourceBundle bundleMensagens = ResourceBundle.getBundle("mensagens");
 	
 	/**
 	 * Metodo responsavel por validar o atributo identificador do servidor {@link UUID}
@@ -20,7 +20,7 @@ public final class Util {
 			UUID.fromString(uuid);
 			return true;
 		} catch (IllegalArgumentException e) {
-			throw new IllegalArgumentException(bundle.getString("mensagem.uuid.invalido"), e.getCause());
+			throw new IllegalArgumentException(bundleMensagens.getString("mensagem.uuid.invalido"), e.getCause());
 		} catch (Exception e) {
 			throw e;
 		}
@@ -39,7 +39,7 @@ public final class Util {
 			Double.parseDouble(numero);
 			return true;
 		} catch (NumberFormatException e) {
-			throw new NumberFormatException(bundle.getString("mensagem.formato.numerico.incorreto"));
+			throw new NumberFormatException(bundleMensagens.getString("mensagem.formato.numerico.incorreto"));
 		} catch (Exception e) {
 			throw e;
 		}

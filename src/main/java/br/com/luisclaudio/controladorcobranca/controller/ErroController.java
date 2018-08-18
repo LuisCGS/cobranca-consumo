@@ -14,8 +14,8 @@ public class ErroController implements ErrorController {
 	
 	@RequestMapping("/error")
 	@ResponseBody
-	public String handleError(HttpServletRequest request) {
-		Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
+	public String tratarErro(HttpServletRequest request) {
+		Integer codigoStatus = (Integer) request.getAttribute("javax.servlet.error.status_code");
 		Exception exception = (Exception) request.getAttribute("javax.servlet.error.exception");
 		
 		StringBuilder sb = new StringBuilder();
@@ -23,17 +23,17 @@ public class ErroController implements ErrorController {
 		sb.append("<html>");
 		sb.append("<body>");
 		sb.append("<h2>");
-		sb.append(Util.bundle.getString("pagina.erro"));
+		sb.append(Util.bundleMensagens.getString("pagina.erro"));
 		sb.append("</h2>");
 		sb.append("<div>");
-		sb.append(Util.bundle.getString("codigo.status"));
+		sb.append(Util.bundleMensagens.getString("codigo.status"));
 		sb.append("<b>");
 		sb.append("&nbsp;");
-		sb.append(statusCode);
+		sb.append(codigoStatus);
 		sb.append("</b>");
 		sb.append("</div>");
 		sb.append("<div>");
-		sb.append(Util.bundle.getString("mensagem.excecao"));
+		sb.append(Util.bundleMensagens.getString("mensagem.excecao"));
 		sb.append("<b>");
 		sb.append("&nbsp;");
 		sb.append(exception==null? "N/A": exception.getMessage());

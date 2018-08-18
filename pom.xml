@@ -40,23 +40,11 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
-<!-- 		<resources> -->
-<!-- 		    include main.properties -->
-<!-- 		    <resource> -->
-<!-- 		      <directory>src/main/resources</directory> -->
-<!-- 		      <filtering>true</filtering> -->
-<!-- 		      <includes> -->
-<!-- 		        <include>main.properties</include> -->
-<!-- 		      </includes> -->
-<!-- 		    </resource> -->
-<!-- 		     exclude everything else from filtering -->
-<!-- 		    <resource> -->
-<!-- 		      <directory>src/main/resources</directory> -->
-<!-- 		      <filtering>false</filtering> -->
-<!-- 		      <excludes> -->
-<!-- 		        <exclude>main.properties</exclude> -->
-<!-- 		      </excludes> -->
-<!-- 		    </resource> -->
-<!-- 		</resources> -->
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 	</build>
 </project>
