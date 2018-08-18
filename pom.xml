@@ -4,7 +4,7 @@
 
 	<groupId>br.com.luisclaudio</groupId>
 	<artifactId>cobranca-consumo</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1</version>
 	<packaging>jar</packaging>
 
 	<name>cobranca-consumo</name>
@@ -13,7 +13,6 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
-    	<database.username>nobody</database.username>
 	</properties>
 	
 	<parent>
@@ -41,23 +40,23 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
-		<resources>
-		    <!-- include main.properties -->
-		    <resource>
-		      <directory>src/main/resources</directory>
-		      <filtering>true</filtering>
-		      <includes>
-		        <include>main.properties</include>
-		      </includes>
-		    </resource>
-		     <!-- exclude everything else from filtering -->
-		    <resource>
-		      <directory>src/main/resources</directory>
-		      <filtering>false</filtering>
-		      <excludes>
-		        <exclude>main.properties</exclude>
-		      </excludes>
-		    </resource>
-		</resources>
+<!-- 		<resources> -->
+<!-- 		    include main.properties -->
+<!-- 		    <resource> -->
+<!-- 		      <directory>src/main/resources</directory> -->
+<!-- 		      <filtering>true</filtering> -->
+<!-- 		      <includes> -->
+<!-- 		        <include>main.properties</include> -->
+<!-- 		      </includes> -->
+<!-- 		    </resource> -->
+<!-- 		     exclude everything else from filtering -->
+<!-- 		    <resource> -->
+<!-- 		      <directory>src/main/resources</directory> -->
+<!-- 		      <filtering>false</filtering> -->
+<!-- 		      <excludes> -->
+<!-- 		        <exclude>main.properties</exclude> -->
+<!-- 		      </excludes> -->
+<!-- 		    </resource> -->
+<!-- 		</resources> -->
 	</build>
 </project>

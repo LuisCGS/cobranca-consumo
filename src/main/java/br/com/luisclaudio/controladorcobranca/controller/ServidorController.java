@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,25 +11,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.luisclaudio.controladorcobranca.model.Servidor;
+import br.com.luisclaudio.controladorcobranca.util.Util;
 
 @RestController
 public class ServidorController {
 	
 	private static List<Servidor> listaServidor = new ArrayList<Servidor>();
 	private static final Double valorUnitario = new Double(2);
-	private static final ResourceBundle bundle = ResourceBundle.getBundle("mensagens");
 	
 	@RequestMapping("/iniciarConsumo")
 	public List<Servidor> iniciarUtilizacaoServidor(@RequestParam(value="uuid") String uuid, @RequestParam(value="horasConsumidas") String horasConsumidas) throws NumberFormatException {
+		Util.validarUUID(uuid);
+		Util.validarConversaoDouble(horasConsumidas);
+		
 		Boolean servidorJaExistente = false;
-		Double horasConsumidasCalculado;
-		
-		try {
-			horasConsumidasCalculado = new Double(Double.parseDouble(horasConsumidas));
-		} catch (NumberFormatException e) {
-			throw e;
-		}
-		
+		Double horasConsumidasCalculado = new Double(Double.parseDouble(horasConsumidas));
 		
 		for (Servidor servidor : listaServidor) {
 			if(servidor.getUuid().equals(uuid)) {
@@ -43,12 +38,12 @@ public class ServidorController {
 			listaServidor.add(new Servidor(uuid, horasConsumidasCalculado));
 		}
 		
-		return listaServidor ;
+		return listaServidor;
 	}
 	
 	@RequestMapping("/consumoServidor")
-	public Map<String, String> calcularConsumoServidor(@RequestParam(value="uuid") String uuid) {
-		Map<String, String> mapServidor = new HashMap<String, String>();
+	public Map<String, Object> calcularConsumoServidor(@RequestParam(value="uuid") String uuid) {
+		Map<String, Object> mapServidor = new HashMap<String, Object>();
 		
 		for (Servidor servidor : listaServidor) {
 			if(servidor.getUuid().equals(uuid)) {
@@ -57,16 +52,18 @@ public class ServidorController {
 			}
 		}
 		
-		mapServidor.put("consumoCalculado", bundle.getString("mensagem.servidor.nao.encontrado"));
+		mapServidor.put("consumoCalculado", Util.bundle.getString("mensagem.servidor.nao.encontrado"));
 		return mapServidor;
+		
+		
 	}
 	
 	@RequestMapping("/consumoTodosServidores")
-	public Map<String, String> calcularConsumoTodosServidores() {
-		Map<String, String> mapServidor = new HashMap<String, String>();
+	public Map<String, Object> calcularConsumoTodosServidores() {
+		Map<String, Object> mapServidor = new HashMap<String, Object>();
 		
 		if(CollectionUtils.isEmpty(listaServidor)) {
-			mapServidor.put("consumoCalculado", bundle.getString("mensagem.servidores.inexistentes"));
+			mapServidor.put("consumoCalculado", Util.bundle.getString("mensagem.servidores.inexistentes"));
 			return mapServidor;
 		}
 		
