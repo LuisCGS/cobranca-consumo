@@ -40,7 +40,7 @@ public class ServidorController {
 			if(servidor.getUuid().equals(uuid)) {
 				servidorJaExistente = true;
 				servidor.setHorasConsumidas(servidor.getHorasConsumidas() + horasConsumidasCalculado);
-				servidor.setTotalConsumido(servidor.getTotalConsumido() + calcularValorTotal(servidor.getHorasConsumidas()));
+				servidor.setTotalConsumido(servidor.getTotalConsumido() + calcularValorTotal(horasConsumidasCalculado));
 			} 
 		}
 		
