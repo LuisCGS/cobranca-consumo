@@ -17,7 +17,7 @@ import br.com.luisclaudio.controladorcobranca.util.Util;
 public class ServidorController {
 	
 	private static List<Servidor> listaServidor = new ArrayList<Servidor>();
-	private static final Double valorUnitario = new Double(2);
+	private static final Double valorUnitario = new Double(Util.bundleConfig.getString("valor.unitario"));
 	
 	/**
 	 * Método responsável por iniciar o consumo de um servidor 
@@ -30,6 +30,8 @@ public class ServidorController {
 	 */
 	@RequestMapping("/iniciarConsumo")
 	public List<Servidor> iniciarUtilizacaoServidor(@RequestParam(value="uuid") String uuid, @RequestParam(value="horasConsumidas") String horasConsumidas) {
+		horasConsumidas = horasConsumidas.replace(",", ".");
+		
 		Util.validarUUID(uuid);
 		Util.validarConversaoDouble(horasConsumidas);
 		
@@ -65,8 +67,8 @@ public class ServidorController {
 		
 		for (Servidor servidor : listaServidor) {
 			if(servidor.getUuid().equals(uuid)) {
-				mapServidor.put(Util.bundleMensagens.getString("key.consumo.horas"), servidor.getHorasConsumidas());
-				mapServidor.put(Util.bundleMensagens.getString("key.valor.cobranca"), servidor.getTotalConsumido());
+				mapServidor.put(Util.bundleMensagens.getString("key.consumo.horas"), Util.formatarDecimais(servidor.getHorasConsumidas()));
+				mapServidor.put(Util.bundleMensagens.getString("key.valor.cobranca"), Util.formatarDecimais(servidor.getTotalConsumido()));
 				
 				return mapServidor;
 			}
@@ -98,12 +100,15 @@ public class ServidorController {
 		}
 		
 		Double valorTotalHorasConsumo = 0.0;
+		Double valorTotalCobrar = 0.0;
 		
 		for (Servidor servidor : listaServidor) {
-			valorTotalHorasConsumo += servidor.getTotalConsumido();
+			valorTotalHorasConsumo += servidor.getHorasConsumidas();
+			valorTotalCobrar += servidor.getTotalConsumido();
 		}
 		
-		mapServidor.put(Util.bundleMensagens.getString("key.consumo.horas"), valorTotalHorasConsumo);
+		mapServidor.put(Util.bundleMensagens.getString("key.consumo.horas"), Util.formatarDecimais(valorTotalHorasConsumo));
+		mapServidor.put(Util.bundleMensagens.getString("key.valor.cobranca"), Util.formatarDecimais(valorTotalCobrar));
 		return mapServidor;
 	}
 
