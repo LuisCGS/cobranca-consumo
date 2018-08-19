@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.UUID;
 
 import org.junit.Test;
 
@@ -48,7 +49,7 @@ public class ServidorControllerTeste {
 	
 	@Test
 	public void testCalcularConsumoServidorInexistente() {
-		Map<String, Object> mapServidores = servidorController.calcularConsumoServidor("123e4567-e89b-12d3-a456-426655440999");
+		Map<String, Object> mapServidores = servidorController.calcularConsumoServidor(UUID.randomUUID().toString());
 		
 		assertEquals(mapServidores.get(bundle.getString("codigo.status")), bundleConfig.getString("codigo.status.ok"));
 		assertEquals(mapServidores.get(bundle.getString("mensagem.padrao")), bundle.getString("mensagem.servidor.nao.encontrado"));

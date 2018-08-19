@@ -18,14 +18,24 @@ public class ServidorController {
 	
 	private static final Double valorUnitario = new Double(Util.bundleConfig.getString("valor.unitario"));
 	private static final String caminhoInicioNovoConsumo = "/iniciarConsumo";
+	private static final String caminhoCalcularConsumoServidor = "/consumoServidor";
+	private static final String caminhoCalcularConsumoTodosServidores = "/consumoTodosServidores";
 	private static List<Servidor> listaServidor = new ArrayList<Servidor>();
 	
-//	@RequestMapping("/")
-//	public Map<String, String> inicio() {
-//		Map<String, String> listaServicos = new LinkedHashMap<String, String>();
-//		
-//		listaServicos.put("Para iniciar um novo consumo de servicos, adicionar na URL: ", caminhoInicioNovoConsumo);
-//	}
+	@RequestMapping("/")
+	public Map<String, String> inicio() {
+		Map<String, String> listaServicos = new LinkedHashMap<String, String>();
+		
+		listaServicos.put(Util.bundleMensagens.getString("codigo.status"), 
+				Util.bundleConfig.getString("codigo.status.ok"));
+		listaServicos.put("Para iniciar um novo consumo de servicos, adicionar na URL: ", caminhoInicioNovoConsumo);
+		listaServicos.put(Util.bundleMensagens.getString("mensagem.inicial.consulta.servidor"), caminhoCalcularConsumoServidor);
+		listaServicos.put(Util.bundleMensagens.getString("mensagem.inicial.consulta.servidores"), caminhoCalcularConsumoTodosServidores);
+		listaServicos.put(Util.bundleMensagens.getString("mensagem.inicial.ajuda"), 
+				Util.bundleMensagens.getString("mensagem.inicial.documentacao.api"));
+		
+		return listaServicos;
+	}
 	
 	/**
 	 * Método responsável por iniciar o consumo de um servidor 
@@ -82,7 +92,7 @@ public class ServidorController {
 	 * @param uuid : {@link String}
 	 * @return {@link Map}<{@link String}, {@link Object}>
 	 */
-	@RequestMapping("/consumoServidor")
+	@RequestMapping(caminhoCalcularConsumoServidor)
 	public Map<String, Object> calcularConsumoServidor(@RequestParam(value="uuid") String uuid) {
 		Map<String, Object> mapServidor = new LinkedHashMap<String, Object>();
 		
@@ -117,7 +127,7 @@ public class ServidorController {
 	 * @since 18/08/2018 - 17:44
 	 * @return {@link Map}<{@link String}, {@link Object}>
 	 */
-	@RequestMapping("/consumoTodosServidores")
+	@RequestMapping(caminhoCalcularConsumoTodosServidores)
 	public Map<String, Object> calcularConsumoTodosServidores() {
 		Map<String, Object> mapServidor = new LinkedHashMap<String, Object>();
 		
