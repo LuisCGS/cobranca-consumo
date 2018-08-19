@@ -1,14 +1,14 @@
 # Projeto cobranca-consumo spring boot microservice
 
-Este é um projeto feito utilizando Java / Maven / Spring Boot (versão 2.0.3), esta aplicação pode ser usada para adicionar clientes que farão consumo de suas APIs, podendo adiciona-los, e ver seu respectivo consumo calculado ou de todos os clientes cadastrados.
+Este é um projeto feito utilizando Java / Maven / Spring Boot (versão 2.0.3), esta aplicação pode ser usada para adicionar consumo de servidores que irão acessar as APIs, podendo ser adicionado seu consumo, e ver a cobrança calculada de acordo com o consumo próprio ou de todos os clientes cadastrados.
 
 ## Como executar
 
-Esta aplicação pode ser utilizada em um servidor de aplicações, como exemplo Tomcat ou JBoss basta somente mudar o '<package>' no pom para war, mas você também pode rodar utilizando a aplicação em formato jar, rodar usando o comando  ```java -jar```.
+Esta aplicação pode ser utilizada em um servidor de aplicações, como exemplo Tomcat ou JBoss basta somente mudar o 'package' no pom para war, mas você também pode rodar utilizando a aplicação em formato jar, rodar usando o comando  ```java -jar```.
 
 * Clone este repositório
 * Tenha certeza que está utilizando uma JDK 1.8 e Maven 3.x
-* Para realizar o build e rodar a aplicação utilizar o seguinte método:
+* Para realizar o build e rodar a aplicação utilizar o seguinte comando:
 ```
     mvn package && java -jar target/cobranca-consumo-1.jar
 ```
