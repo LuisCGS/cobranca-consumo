@@ -1,7 +1,7 @@
 package br.com.luisclaudio.controladorcobranca;
 
 import static org.junit.Assert.*;
-import java.util.List;
+
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -14,42 +14,54 @@ public class ServidorControllerTeste {
 
 	ServidorController servidorController = new ServidorController();
 	private static final ResourceBundle bundle = ResourceBundle.getBundle("mensagens");
+	private static final ResourceBundle bundleConfig = ResourceBundle.getBundle("configuracoes");
 	private static final Double valorUnitario = new Double(Util.bundleConfig.getString("valor.unitario"));
 	
 	@Test
 	public void testIniciarUtilizacaoServidor() {
-		assertTrue(servidorController.iniciarUtilizacaoServidor("123e4567-e89b-12d3-a456-426655440000", "10") instanceof List);
+		assertTrue(servidorController.iniciarUtilizacaoServidor("123e4567-e89b-12d3-a456-426655440000", "10") instanceof Map);
 	}
 	
 	@Test
 	public void testIniciarUtilizacaoServidorValorComVirgula() {
-		assertTrue(servidorController.iniciarUtilizacaoServidor("123e4567-e89b-12d3-a456-426655440000", "10,9") instanceof List);
+		assertTrue(servidorController.iniciarUtilizacaoServidor("123e4567-e89b-12d3-a456-426655440000", "10,9") instanceof Map);
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test
 	public void testIniciarUtilizacaoServidorUUIDException() {
-		servidorController.iniciarUtilizacaoServidor("uuidIncorreto", "10");
+		Map<String, Object> mapRetorno = servidorController.iniciarUtilizacaoServidor("uuidIncorreto", "10");
+		assertTrue(mapRetorno.get(bundle.getString("codigo.status")).equals(bundleConfig.getString("codigo.status.erro.cliente")));
 	}
 	
-	@Test(expected=NumberFormatException.class)
+	@Test
 	public void testIniciarUtilizacaoServidorHorasConsumidasException() {
-		servidorController.iniciarUtilizacaoServidor("123e4567-e89b-12d3-a456-426655440000", "naoNumerico");
+		Map<String, Object> mapRetorno = servidorController.iniciarUtilizacaoServidor("123e4567-e89b-12d3-a456-426655440000", "naoNumerico");
+		assertTrue(mapRetorno.get(bundle.getString("codigo.status")).equals(bundleConfig.getString("codigo.status.erro.cliente")));
+	}
+	
+	@Test
+	public void testRetornoValidoConsumoServidor() {
+		assertTrue(servidorController.calcularConsumoServidor("123e4567-e89b-12d3-a456-426655440000") instanceof Map);
+		assertEquals(servidorController.calcularConsumoServidor("123e4567-e89b-12d3-a456-426655440999")
+				.get(bundle.getString("codigo.status")), bundleConfig.getString("codigo.status.ok"));
 	}
 	
 	@Test
 	public void testCalcularConsumoServidorInexistente() {
-		assertTrue(servidorController.calcularConsumoServidor("123e4567-e89b-12d3-a456-426655440000") instanceof Map);
-		assertEquals(servidorController.calcularConsumoServidor("123e4567-e89b-12d3-a456-426655440999")
-				.get(bundle.getString("key.consumo.horas")), bundle.getString("mensagem.servidor.nao.encontrado"));
+		Map<String, Object> mapServidores = servidorController.calcularConsumoServidor("123e4567-e89b-12d3-a456-426655440999");
+		
+		assertEquals(mapServidores.get(bundle.getString("codigo.status")), bundleConfig.getString("codigo.status.ok"));
+		assertEquals(mapServidores.get(bundle.getString("mensagem.padrao")), bundle.getString("mensagem.servidor.nao.encontrado"));
 	}
 	
 	@Test
 	public void testCalcularConsumoServidorNovo() {
 		servidorController.iniciarUtilizacaoServidor("123e4567-e89b-12d3-a456-426655440001", "10.5");
-		assertEquals(servidorController.calcularConsumoServidor("123e4567-e89b-12d3-a456-426655440001")
-				.get(bundle.getString("key.consumo.horas")), 10.5);
-		assertEquals(servidorController.calcularConsumoServidor("123e4567-e89b-12d3-a456-426655440001")
-				.get(bundle.getString("key.valor.cobranca")), 10.5 * valorUnitario);
+		Map<String, Object> mapServidores = servidorController.calcularConsumoServidor("123e4567-e89b-12d3-a456-426655440001");
+		
+		assertEquals(mapServidores.get(bundle.getString("codigo.status")), bundleConfig.getString("codigo.status.ok"));
+		assertEquals(mapServidores.get(bundle.getString("key.consumo.horas")), 10.5);
+		assertEquals(mapServidores.get(bundle.getString("key.valor.cobranca")), 10.5 * valorUnitario);
 	}
 	
 	@Test
@@ -59,13 +71,19 @@ public class ServidorControllerTeste {
 		servidorController.iniciarUtilizacaoServidor("123e4567-e89b-12d3-a456-426655440002", "8590.99");
 		
 		// 10.5 + 37.1 . 8590.99 = 8638.59
+		Map<String, Object> mapServidores = servidorController.calcularConsumoServidor("123e4567-e89b-12d3-a456-426655440002");
 		
-		assertEquals(servidorController.calcularConsumoServidor("123e4567-e89b-12d3-a456-426655440002")
-				.get(bundle.getString("key.consumo.horas")), 8638.59);
-		assertEquals(servidorController.calcularConsumoServidor("123e4567-e89b-12d3-a456-426655440002")
-				.get(bundle.getString("key.valor.cobranca")), 8638.59 * valorUnitario);
+		assertEquals(mapServidores.get(bundle.getString("key.consumo.horas")), 8638.59);
+		assertEquals(mapServidores.get(bundle.getString("key.valor.cobranca")), 8638.59 * valorUnitario);
 	}
-
+	
+	@Test
+	public void testRetornoValidoCalcularConsumoTodosServidores() {
+		assertTrue(servidorController.calcularConsumoTodosServidores() instanceof Map);
+		assertEquals(servidorController.calcularConsumoTodosServidores()
+				.get(bundle.getString("codigo.status")), bundleConfig.getString("codigo.status.ok"));
+	}
+	
 	@Test
 	public void testCalcularConsumoTodosServidores() {
 		Double valorTotalHoras = new Double(0.0);
@@ -85,5 +103,4 @@ public class ServidorControllerTeste {
 		assertEquals(servidorController.calcularConsumoTodosServidores()
 				.get(bundle.getString("key.valor.cobranca")), valorTotalCobranca);
 	}
-
 }

@@ -22,7 +22,7 @@ public final class Util {
 			UUID.fromString(uuid);
 			return true;
 		} catch (IllegalArgumentException e) {
-			throw new IllegalArgumentException(bundleMensagens.getString("mensagem.uuid.invalido"), e.getCause());
+			return false;
 		} catch (Exception e) {
 			throw e;
 		}
@@ -41,7 +41,7 @@ public final class Util {
 			Double.parseDouble(numero);
 			return true;
 		} catch (NumberFormatException e) {
-			throw new NumberFormatException(bundleMensagens.getString("mensagem.formato.numerico.incorreto"));
+			return false;
 		} catch (Exception e) {
 			throw e;
 		}

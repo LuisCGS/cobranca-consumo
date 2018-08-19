@@ -1,7 +1,7 @@
 package br.com.luisclaudio.controladorcobranca.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,8 +16,16 @@ import br.com.luisclaudio.controladorcobranca.util.Util;
 @RestController
 public class ServidorController {
 	
-	private static List<Servidor> listaServidor = new ArrayList<Servidor>();
 	private static final Double valorUnitario = new Double(Util.bundleConfig.getString("valor.unitario"));
+	private static final String caminhoInicioNovoConsumo = "/iniciarConsumo";
+	private static List<Servidor> listaServidor = new ArrayList<Servidor>();
+	
+//	@RequestMapping("/")
+//	public Map<String, String> inicio() {
+//		Map<String, String> listaServicos = new LinkedHashMap<String, String>();
+//		
+//		listaServicos.put("Para iniciar um novo consumo de servicos, adicionar na URL: ", caminhoInicioNovoConsumo);
+//	}
 	
 	/**
 	 * Método responsável por iniciar o consumo de um servidor 
@@ -28,12 +36,20 @@ public class ServidorController {
 	 * @param horasConsumidas : {@link String}
 	 * @return {@link List}<{@link Servidor}>
 	 */
-	@RequestMapping("/iniciarConsumo")
-	public List<Servidor> iniciarUtilizacaoServidor(@RequestParam(value="uuid") String uuid, @RequestParam(value="horasConsumidas") String horasConsumidas) {
+	@RequestMapping(caminhoInicioNovoConsumo)
+	public Map<String, Object> iniciarUtilizacaoServidor(@RequestParam(value="uuid") String uuid, @RequestParam(value="horasConsumidas") String horasConsumidas) {
+		Map<String, Object> listaMensagensRetorno = new LinkedHashMap<String, Object>();
 		horasConsumidas = horasConsumidas.replace(",", ".");
 		
-		Util.validarUUID(uuid);
-		Util.validarConversaoDouble(horasConsumidas);
+		if(Boolean.FALSE.equals(Util.validarUUID(uuid))) {
+			adicionarExcecaoUUID(listaMensagensRetorno);
+			return listaMensagensRetorno;
+		}
+		
+		if(Boolean.FALSE.equals(Util.validarConversaoDouble(horasConsumidas))) {
+			adicionarExcecaoHorasConsumidas(listaMensagensRetorno);
+			return listaMensagensRetorno;
+		}
 		
 		Boolean servidorJaExistente = false;
 		Double horasConsumidasCalculado = new Double(Double.parseDouble(horasConsumidas));
@@ -50,7 +66,12 @@ public class ServidorController {
 			listaServidor.add(new Servidor(uuid, horasConsumidasCalculado, calcularValorTotal(horasConsumidasCalculado)));
 		}
 		
-		return listaServidor;
+		listaMensagensRetorno.put(Util.bundleMensagens.getString("codigo.status"), 
+				Util.bundleConfig.getString("codigo.status.ok"));
+		listaMensagensRetorno.put(Util.bundleMensagens.getString("mensagem.padrao"), 
+				Util.bundleMensagens.getString("mensagem.sucesso").replace("{0}", uuid));
+		
+		return listaMensagensRetorno;
 	}
 	
 	/**
@@ -63,7 +84,15 @@ public class ServidorController {
 	 */
 	@RequestMapping("/consumoServidor")
 	public Map<String, Object> calcularConsumoServidor(@RequestParam(value="uuid") String uuid) {
-		Map<String, Object> mapServidor = new HashMap<String, Object>();
+		Map<String, Object> mapServidor = new LinkedHashMap<String, Object>();
+		
+		if(Boolean.FALSE.equals(Util.validarUUID(uuid))) {
+			adicionarExcecaoUUID(mapServidor);
+			return mapServidor;
+		}
+		
+		mapServidor.put(Util.bundleMensagens.getString("codigo.status"), 
+				Util.bundleConfig.getString("codigo.status.ok"));
 		
 		for (Servidor servidor : listaServidor) {
 			if(servidor.getUuid().equals(uuid)) {
@@ -74,7 +103,7 @@ public class ServidorController {
 			}
 		}
 		
-		mapServidor.put(Util.bundleMensagens.getString("key.consumo.horas"), 
+		mapServidor.put(Util.bundleMensagens.getString("mensagem.padrao"), 
 				Util.bundleMensagens.getString("mensagem.servidor.nao.encontrado"));
 		return mapServidor;
 		
@@ -90,10 +119,12 @@ public class ServidorController {
 	 */
 	@RequestMapping("/consumoTodosServidores")
 	public Map<String, Object> calcularConsumoTodosServidores() {
-		Map<String, Object> mapServidor = new HashMap<String, Object>();
+		Map<String, Object> mapServidor = new LinkedHashMap<String, Object>();
 		
 		if(CollectionUtils.isEmpty(listaServidor)) {
-			mapServidor.put(Util.bundleMensagens.getString("key.consumo.horas"), 
+			mapServidor.put(Util.bundleMensagens.getString("codigo.status"), 
+					Util.bundleConfig.getString("codigo.status.ok"));
+			mapServidor.put(Util.bundleMensagens.getString("mensagem.padrao"), 
 					Util.bundleMensagens.getString("mensagem.servidores.inexistentes"));
 			
 			return mapServidor;
@@ -106,7 +137,8 @@ public class ServidorController {
 			valorTotalHorasConsumo += servidor.getHorasConsumidas();
 			valorTotalCobrar += servidor.getTotalConsumido();
 		}
-		
+		mapServidor.put(Util.bundleMensagens.getString("codigo.status"), 
+				Util.bundleConfig.getString("codigo.status.ok"));
 		mapServidor.put(Util.bundleMensagens.getString("key.consumo.horas"), Util.formatarDecimais(valorTotalHorasConsumo));
 		mapServidor.put(Util.bundleMensagens.getString("key.valor.cobranca"), Util.formatarDecimais(valorTotalCobrar));
 		return mapServidor;
@@ -122,5 +154,33 @@ public class ServidorController {
 	 */
 	private Double calcularValorTotal(Double horasConsumidas) {
 		return horasConsumidas * valorUnitario;
+	}
+	
+	/**
+	 * Método responsável por adicionar a mensagem de excecao para um numero invalido 
+	 *
+	 * @author Luis Claudio Goncalves Sanches
+	 * @since 18/08/2018 - 20:06
+	 * @param listaMensagensRetorno : {@link Map}<{@link String}, {@link Object}>
+	 */
+	private void adicionarExcecaoHorasConsumidas(Map<String, Object> listaMensagensRetorno) {
+		listaMensagensRetorno.put(Util.bundleMensagens.getString("codigo.status"), 
+				Util.bundleConfig.getString("codigo.status.erro.cliente"));
+		listaMensagensRetorno.put( Util.bundleMensagens.getString("mensagem.excecao"), 
+				Util.bundleMensagens.getString("mensagem.formato.numerico.incorreto"));
+	}
+	
+	/**
+	 * Método responsável por adicionar a mensagem de excecao para um UUID invalido
+	 *
+	 * @author Luis Claudio Goncalves Sanches
+	 * @since 18/08/2018 - 20:07
+	 * @param listaMensagensRetorno : {@link Map}<{@link String}, {@link Object}>
+	 */
+	private void adicionarExcecaoUUID(Map<String, Object> listaMensagensRetorno) {
+		listaMensagensRetorno.put(Util.bundleMensagens.getString("codigo.status"), 
+				Util.bundleConfig.getString("codigo.status.erro.cliente"));
+		listaMensagensRetorno.put( Util.bundleMensagens.getString("mensagem.excecao"), 
+				Util.bundleMensagens.getString("mensagem.uuid.invalido"));
 	}
 }
