@@ -28,7 +28,7 @@ public class ServidorController {
 		
 		listaServicos.put(Util.bundleMensagens.getString("codigo.status"), 
 				Util.bundleConfig.getString("codigo.status.ok"));
-		listaServicos.put("Para iniciar um novo consumo de servicos, adicionar na URL: ", caminhoInicioNovoConsumo);
+		listaServicos.put(Util.bundleMensagens.getString("mensagem.inicial.novo.cosumo"), caminhoInicioNovoConsumo);
 		listaServicos.put(Util.bundleMensagens.getString("mensagem.inicial.consulta.servidor"), caminhoCalcularConsumoServidor);
 		listaServicos.put(Util.bundleMensagens.getString("mensagem.inicial.consulta.servidores"), caminhoCalcularConsumoTodosServidores);
 		listaServicos.put(Util.bundleMensagens.getString("mensagem.inicial.ajuda"), 
