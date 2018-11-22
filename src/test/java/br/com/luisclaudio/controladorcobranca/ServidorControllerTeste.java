@@ -8,12 +8,12 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import br.com.luisclaudio.controladorcobranca.controller.ServidorController;
+import br.com.luisclaudio.controladorcobranca.controller.JSONController;
 import br.com.luisclaudio.controladorcobranca.util.Util;
 
 public class ServidorControllerTeste {
 
-	ServidorController servidorController = new ServidorController();
+	JSONController servidorController = new JSONController();
 	private static final ResourceBundle bundle = ResourceBundle.getBundle("mensagens");
 	private static final ResourceBundle bundleConfig = ResourceBundle.getBundle("configuracoes");
 	private static final Double valorUnitario = new Double(Util.bundleConfig.getString("valor.unitario"));

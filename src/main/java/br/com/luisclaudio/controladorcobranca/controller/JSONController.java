@@ -14,7 +14,7 @@ import br.com.luisclaudio.controladorcobranca.model.Servidor;
 import br.com.luisclaudio.controladorcobranca.util.Util;
 
 @RestController
-public class ServidorController {
+public class JSONController {
 	
 	private static final Double valorUnitario = new Double(Util.bundleConfig.getString("valor.unitario"));
 	private static final String caminhoInicioNovoConsumo = "/iniciarConsumo";
@@ -28,9 +28,12 @@ public class ServidorController {
 		
 		listaServicos.put(Util.bundleMensagens.getString("codigo.status"), 
 				Util.bundleConfig.getString("codigo.status.ok"));
-		listaServicos.put(Util.bundleMensagens.getString("mensagem.inicial.novo.cosumo"), caminhoInicioNovoConsumo);
-		listaServicos.put(Util.bundleMensagens.getString("mensagem.inicial.consulta.servidor"), caminhoCalcularConsumoServidor);
-		listaServicos.put(Util.bundleMensagens.getString("mensagem.inicial.consulta.servidores"), caminhoCalcularConsumoTodosServidores);
+		listaServicos.put(Util.bundleMensagens.getString("mensagem.inicial.novo.cosumo"), 
+				caminhoInicioNovoConsumo);
+		listaServicos.put(Util.bundleMensagens.getString("mensagem.inicial.consulta.servidor"), 
+				caminhoCalcularConsumoServidor);
+		listaServicos.put(Util.bundleMensagens.getString("mensagem.inicial.consulta.servidores"), 
+				caminhoCalcularConsumoTodosServidores);
 		listaServicos.put(Util.bundleMensagens.getString("mensagem.inicial.ajuda"), 
 				Util.bundleMensagens.getString("mensagem.inicial.documentacao.api"));
 		
